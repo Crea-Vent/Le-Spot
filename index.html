@@ -53,25 +53,172 @@
 
     .header-right { display: flex; align-items: center; gap: 8px; }
 
-    /* Bouton admin + */
+    /* Bouton Panel Admin */
     .btn-admin-add {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background-color: var(--jaune-solaire);
-      border: none;
       display: none;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 20px;
+      background-color: var(--jaune-solaire);
+      border: none;
       cursor: pointer;
-      font-size: 1.3rem;
-      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
       color: var(--orange-brule);
-      transition: transform 0.15s;
+      transition: transform 0.15s, background 0.2s;
+      white-space: nowrap;
     }
 
-    .btn-admin-add:hover { transform: scale(1.1); }
+    .btn-admin-add:hover { transform: scale(1.05); background: #ffd060; }
     .btn-admin-add.visible { display: flex; }
+
+    /* ── PANEL ADMIN (plein écran) ── */
+    .admin-panel {
+      position: fixed;
+      inset: 0;
+      background: var(--blanc-casse);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(.32,1.1,.6,1);
+    }
+
+    .admin-panel.open { transform: translateY(0); }
+
+    .admin-header {
+      background: var(--orange-brule);
+      padding: 20px 20px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .admin-header-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--blanc-casse);
+    }
+
+    .admin-header-title span { color: var(--jaune-solaire); }
+
+    .btn-close-admin {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .btn-close-admin:hover { background: rgba(255,255,255,0.3); }
+
+    .admin-tabs {
+      display: flex;
+      background: #fff;
+      border-bottom: 2px solid #ede0dc;
+      flex-shrink: 0;
+    }
+
+    .admin-tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #aaa;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      margin-bottom: -2px;
+    }
+
+    .admin-tab.active {
+      color: var(--orange-brule);
+      border-bottom-color: var(--orange-brule);
+    }
+
+    .admin-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 20px 40px;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .admin-section { display: none; flex-direction: column; gap: 14px; }
+    .admin-section.active { display: flex; }
+
+    /* Liste des événements dans le panel admin */
+    .admin-event-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 4px solid var(--orange-corail);
+      box-shadow: 0 1px 6px rgba(163,59,38,0.08);
+    }
+
+    .admin-event-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .admin-event-info { flex: 1; min-width: 0; }
+
+    .admin-event-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #1a1a1a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-event-sub {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .admin-event-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .btn-evt-delete {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: none;
+      background: #fce8e4;
+      color: var(--orange-brule);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+
+    .btn-evt-delete:hover { background: var(--orange-corail); color: #fff; }
+
+    .admin-empty {
+      text-align: center;
+      color: #ccc;
+      font-size: 0.9rem;
+      padding: 30px 0;
+    }
+
+    .admin-empty span { font-size: 2rem; display: block; margin-bottom: 8px; }
 
     .btn-account {
       width: 38px;
@@ -543,7 +690,7 @@
     <div class="header-top">
       <div class="app-title">Le <span>Spot</span> Angers</div>
       <div class="header-right">
-        <button class="btn-admin-add" id="btnAdminAdd" title="Ajouter un événement">＋</button>
+        <button class="btn-admin-add" id="btnAdminAdd">⚡ Panel Admin</button>
         <button class="btn-account" id="btnAccount">👤</button>
       </div>
     </div>
@@ -615,43 +762,73 @@
     </div>
   </div>
 
-  <!-- DRAWER : AJOUT ÉVÉNEMENT (admin) -->
-  <div class="drawer" id="drawerAdmin">
-    <div class="drawer-handle"></div>
-    <div class="drawer-title">➕ Ajouter un événement</div>
-    <form id="formAddEvent" style="display:flex;flex-direction:column;gap:14px;">
-      <div class="field-group">
-        <label>Nom de l'événement</label>
-        <input type="text" id="evtTitle" placeholder="Soirée étudiante..." required />
+  <!-- PANEL ADMIN (plein écran) -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <div class="admin-header-title">⚡ Panel <span>Admin</span></div>
+      <button class="btn-close-admin" id="btnCloseAdmin">✕</button>
+    </div>
+
+    <div class="admin-tabs">
+      <div class="admin-tab active" data-atab="add">➕ Ajouter</div>
+      <div class="admin-tab" data-atab="manage">📋 Gérer les événements</div>
+    </div>
+
+    <div class="admin-body">
+
+      <!-- Onglet : Ajouter -->
+      <div class="admin-section active" id="adminSectionAdd">
+        <form id="formAddEvent" style="display:flex;flex-direction:column;gap:14px;">
+          <div class="field-group">
+            <label>Nom de l'événement</label>
+            <input type="text" id="evtTitle" placeholder="Soirée étudiante..." required />
+          </div>
+          <div class="field-group">
+            <label>Catégorie</label>
+            <select id="evtCat">
+              <option value="bar">🍺 Bar</option>
+              <option value="bde">🎓 BDE</option>
+              <option value="culture">🎨 Culture</option>
+              <option value="evenements">🎉 Évènements</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Date</label>
+            <input type="date" id="evtDate" required />
+          </div>
+          <div class="field-group">
+            <label>Heure</label>
+            <input type="time" id="evtTime" />
+          </div>
+          <div class="field-group">
+            <label>Lieu</label>
+            <input type="text" id="evtPlace" placeholder="Le Chabada, Bar La Maine..." />
+          </div>
+          <div class="field-group">
+            <label>Description</label>
+            <textarea id="evtDesc" placeholder="Décris l'événement..."></textarea>
+          </div>
+          <div class="field-group">
+            <label>Lien Instagram</label>
+            <input type="url" id="evtInstagram" placeholder="https://instagram.com/..." />
+          </div>
+          <div class="field-group">
+            <label>Site internet</label>
+            <input type="url" id="evtWebsite" placeholder="https://..." />
+          </div>
+          <div class="auth-error" id="adminError"></div>
+          <button type="submit" class="btn-submit">🚀 Publier l'événement</button>
+        </form>
       </div>
-      <div class="field-group">
-        <label>Catégorie</label>
-        <select id="evtCat">
-          <option value="bar">🍺 Bar</option>
-          <option value="bde">🎓 BDE</option>
-          <option value="culture">🎨 Culture</option>
-          <option value="evenements">🎉 Évènements</option>
-        </select>
+
+      <!-- Onglet : Gérer -->
+      <div class="admin-section" id="adminSectionManage">
+        <div id="adminEventsList">
+          <div class="admin-empty"><span>📅</span>Chargement…</div>
+        </div>
       </div>
-      <div class="field-group">
-        <label>Date</label>
-        <input type="date" id="evtDate" required />
-      </div>
-      <div class="field-group">
-        <label>Description</label>
-        <textarea id="evtDesc" placeholder="Décris l'événement..."></textarea>
-      </div>
-      <div class="field-group">
-        <label>Lien Instagram</label>
-        <input type="url" id="evtInstagram" placeholder="https://instagram.com/..." />
-      </div>
-      <div class="field-group">
-        <label>Site internet</label>
-        <input type="url" id="evtWebsite" placeholder="https://..." />
-      </div>
-      <div class="auth-error" id="adminError"></div>
-      <button type="submit" class="btn-submit">Publier l'événement</button>
-    </form>
+
+    </div>
   </div>
 
   <!-- DRAWER : DÉTAIL ÉVÉNEMENT -->
@@ -761,9 +938,27 @@
     overlay.addEventListener('click', closeDrawer);
 
     document.getElementById('btnAccount').addEventListener('click', () => openDrawer('drawerAccount'));
+
+    // Panel admin
     document.getElementById('btnAdminAdd').addEventListener('click', () => {
       document.getElementById('evtDate').value = selectedDate;
-      openDrawer('drawerAdmin');
+      document.getElementById('adminPanel').classList.add('open');
+      loadAdminEvents();
+    });
+
+    document.getElementById('btnCloseAdmin').addEventListener('click', () => {
+      document.getElementById('adminPanel').classList.remove('open');
+    });
+
+    // Tabs admin
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('adminSection' + cap(tab.dataset.atab)).classList.add('active');
+        if (tab.dataset.atab === 'manage') loadAdminEvents();
+      });
     });
 
     /* ── Auth tabs ── */
@@ -875,20 +1070,65 @@
           title:     document.getElementById('evtTitle').value.trim(),
           category:  document.getElementById('evtCat').value,
           date:      document.getElementById('evtDate').value,
+          time:      document.getElementById('evtTime').value,
+          place:     document.getElementById('evtPlace').value.trim(),
           desc:      document.getElementById('evtDesc').value.trim(),
           instagram: document.getElementById('evtInstagram').value.trim(),
           website:   document.getElementById('evtWebsite').value.trim(),
           createdAt: serverTimestamp(),
         });
         e.target.reset();
-        closeDrawer();
+        document.getElementById('evtDate').value = selectedDate;
         loadEvents();
+        // Passer sur l'onglet Gérer
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+        document.querySelector('[data-atab="manage"]').classList.add('active');
+        document.getElementById('adminSectionManage').classList.add('active');
+        loadAdminEvents();
       } catch (err) {
         showError('adminError', 'Erreur lors de la publication.');
       } finally {
-        btn.textContent = 'Publier l\'événement'; btn.disabled = false;
+        btn.textContent = '🚀 Publier l\'événement'; btn.disabled = false;
       }
     });
+
+    /* ── Liste événements panel admin ── */
+    function loadAdminEvents() {
+      const container = document.getElementById('adminEventsList');
+      container.innerHTML = '<div class="admin-empty"><span>⏳</span>Chargement…</div>';
+
+      const q = query(collection(db, 'events'), orderBy('date', 'desc'));
+      onSnapshot(q, snap => {
+        if (snap.empty) {
+          container.innerHTML = '<div class="admin-empty"><span>📭</span>Aucun événement publié</div>';
+          return;
+        }
+        container.innerHTML = '';
+        snap.docs.forEach(docSnap => {
+          const evt  = docSnap.data();
+          const meta = catMeta[evt.category] || { icon: '📌', label: evt.category };
+          const item = document.createElement('div');
+          item.className = 'admin-event-item';
+          item.innerHTML = `
+            <div class="admin-event-icon">${meta.icon}</div>
+            <div class="admin-event-info">
+              <div class="admin-event-name">${evt.title}</div>
+              <div class="admin-event-sub">${meta.label} · ${formatDate(evt.date)}${evt.time ? ' · ' + evt.time : ''}${evt.place ? ' · ' + evt.place : ''}</div>
+            </div>
+            <div class="admin-event-actions">
+              <button class="btn-evt-delete">🗑 Supprimer</button>
+            </div>
+          `;
+          item.querySelector('.btn-evt-delete').addEventListener('click', async () => {
+            if (confirm(`Supprimer "${evt.title}" ?`)) {
+              await deleteDoc(doc(db, 'events', docSnap.id));
+            }
+          });
+          container.appendChild(item);
+        });
+      });
+    }
 
     /* ── Charger les événements ── */
     function loadEvents() {
@@ -965,7 +1205,7 @@
     function openDetail(evt, meta) {
       document.getElementById('detailCover').textContent     = meta.icon;
       document.getElementById('detailTitle').textContent     = evt.title;
-      document.getElementById('detailDateCat').textContent   = `${meta.label} · ${formatDate(evt.date)}`;
+      document.getElementById('detailDateCat').textContent   = [meta.label, formatDate(evt.date), evt.time, evt.place].filter(Boolean).join(' · ');
       document.getElementById('detailDesc').textContent      = evt.desc || 'Aucune description.';
 
       const links = document.getElementById('detailLinks');
