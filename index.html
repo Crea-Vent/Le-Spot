@@ -577,6 +577,19 @@
 
     .profile-email { text-align: center; font-size: 0.85rem; color: #999; margin-top: -10px; }
 
+    .profile-uid {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #ccc;
+      background: #f5f0ee;
+      border-radius: 8px;
+      padding: 6px 10px;
+      word-break: break-all;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .profile-uid:hover { background: #ede0dc; color: #999; }
+
     .profile-role {
       text-align: center;
       font-size: 0.78rem;
@@ -758,6 +771,7 @@
       <div class="profile-name" id="profileName"></div>
       <div class="profile-email" id="profileEmail"></div>
       <div class="profile-role" id="profileRole" style="display:none"></div>
+      <div class="profile-uid" id="profileUid" style="display:none"></div>
       <button class="btn-logout" id="btnLogout">Se déconnecter</button>
     </div>
   </div>
@@ -1028,6 +1042,16 @@
         document.getElementById('profileEmail').textContent  = user.email;
         btnAccount.textContent = name[0].toUpperCase();
         btnAccount.classList.add('logged-in');
+
+        // Afficher l'UID (utile pour configurer l'admin dans Firestore)
+        const uidEl = document.getElementById('profileUid');
+        uidEl.textContent = '🔑 UID : ' + user.uid;
+        uidEl.style.display = 'block';
+        uidEl.onclick = () => {
+          navigator.clipboard.writeText(user.uid);
+          uidEl.textContent = '✅ UID copié !';
+          setTimeout(() => { uidEl.textContent = '🔑 UID : ' + user.uid; }, 2000);
+        };
 
         // Récupérer le rôle depuis Firestore (sans bloquer l'UI)
         try {
