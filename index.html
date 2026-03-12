@@ -1043,22 +1043,31 @@
         btnAccount.textContent = name[0].toUpperCase();
         btnAccount.classList.add('logged-in');
 
-        // Afficher l'UID (utile pour configurer l'admin dans Firestore)
+        // Afficher l'UID
         const uidEl = document.getElementById('profileUid');
-        uidEl.textContent = '🔑 UID : ' + user.uid;
+        uidEl.textContent = '🔑 ' + user.uid;
         uidEl.style.display = 'block';
         uidEl.onclick = () => {
           navigator.clipboard.writeText(user.uid);
           uidEl.textContent = '✅ UID copié !';
-          setTimeout(() => { uidEl.textContent = '🔑 UID : ' + user.uid; }, 2000);
+          setTimeout(() => { uidEl.textContent = '🔑 ' + user.uid; }, 2000);
         };
 
-        // Récupérer le rôle depuis Firestore (sans bloquer l'UI)
+        // Récupérer le rôle depuis Firestore
+        const uidEl2 = document.getElementById('profileUid');
         try {
           const snap = await getDoc(doc(db, 'users', user.uid));
-          isAdmin = snap.exists() && snap.data().role === 'admin';
+          if (!snap.exists()) {
+            isAdmin = false;
+            uidEl2.textContent = '⚠️ Doc Firestore introuvable — crée users/' + user.uid;
+          } else {
+            const role = snap.data().role;
+            isAdmin = role === 'admin';
+            uidEl2.textContent = isAdmin ? '✅ Admin détecté' : '👤 Rôle : ' + (role || 'non défini');
+          }
         } catch (e) {
           isAdmin = false;
+          uidEl2.textContent = '❌ Erreur Firestore : ' + e.message;
         }
 
         const roleEl = document.getElementById('profileRole');
