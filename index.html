@@ -1055,8 +1055,8 @@
         btnAccount.textContent = '👤';
         btnAccount.classList.remove('logged-in');
         btnAdminAdd.classList.remove('visible');
+        loadEvents();
       }
-      loadEvents();
     });
 
     /* ── Ajout événement (admin) ── */
@@ -1094,12 +1094,16 @@
     });
 
     /* ── Liste événements panel admin ── */
+    let unsubAdmin = null;
+
     function loadAdminEvents() {
+      if (unsubAdmin) { unsubAdmin(); unsubAdmin = null; }
+
       const container = document.getElementById('adminEventsList');
       container.innerHTML = '<div class="admin-empty"><span>⏳</span>Chargement…</div>';
 
       const q = query(collection(db, 'events'), orderBy('date', 'desc'));
-      onSnapshot(q, snap => {
+      unsubAdmin = onSnapshot(q, snap => {
         if (snap.empty) {
           container.innerHTML = '<div class="admin-empty"><span>📭</span>Aucun événement publié</div>';
           return;
@@ -1131,11 +1135,15 @@
     }
 
     /* ── Charger les événements ── */
+    let unsubEvents = null;
+
     function loadEvents() {
+      // Désabonner l'ancien listener
+      if (unsubEvents) { unsubEvents(); unsubEvents = null; }
+
       const section = document.getElementById('eventsSection');
       const empty   = document.getElementById('eventsEmpty');
 
-      // Vider les cartes existantes (garder #eventsEmpty)
       Array.from(section.children).forEach(c => {
         if (c.id !== 'eventsEmpty') c.remove();
       });
@@ -1145,13 +1153,13 @@
         return;
       }
 
+      // Pas de orderBy pour éviter l'index composite Firestore
       const q = query(
         collection(db, 'events'),
-        where('date', '==', selectedDate),
-        orderBy('createdAt', 'asc')
+        where('date', '==', selectedDate)
       );
 
-      onSnapshot(q, snap => {
+      unsubEvents = onSnapshot(q, snap => {
         Array.from(section.children).forEach(c => {
           if (c.id !== 'eventsEmpty') c.remove();
         });
