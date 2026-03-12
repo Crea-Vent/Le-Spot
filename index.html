@@ -484,11 +484,37 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp }                              from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAnalytics }                              from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+    /* ── Firebase init ── */
+    const firebaseConfig = {
+      apiKey:            "AIzaSyBRGJV8pMv4rcr93DUWVeCULJmojRHOrV4",
+      authDomain:        "le-spot-angers.firebaseapp.com",
+      projectId:         "le-spot-angers",
+      storageBucket:     "le-spot-angers.firebasestorage.app",
+      messagingSenderId: "567848754489",
+      appId:             "1:567848754489:web:b5c4c8e6910009235d5ce8",
+      measurementId:     "G-T0D0EK8WBP"
+    };
+
+    const app       = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth      = getAuth(app);
+
     /* ── Dates ── */
-    const months = ['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+    const months   = ['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
     const dateList = document.getElementById('dateList');
-    const today = new Date();
+    const today    = new Date();
 
     for (let i = -3; i <= 3; i++) {
       const d = new Date(today);
@@ -514,29 +540,18 @@
       chip.addEventListener('click', () => chip.classList.toggle('selected'))
     );
 
-    /* ── Compte / Auth ── */
-    const overlay   = document.getElementById('overlay');
-    const drawer    = document.getElementById('drawer');
+    /* ── Drawer ── */
+    const overlay    = document.getElementById('overlay');
+    const drawer     = document.getElementById('drawer');
     const btnAccount = document.getElementById('btnAccount');
 
-    // Simule une base locale (localStorage)
-    let currentUser = JSON.parse(localStorage.getItem('lespot_user') || 'null');
-    refreshAccountUI();
-
-    function openDrawer() {
-      overlay.classList.add('open');
-      drawer.classList.add('open');
-    }
-
-    function closeDrawer() {
-      overlay.classList.remove('open');
-      drawer.classList.remove('open');
-    }
+    const openDrawer  = () => { overlay.classList.add('open'); drawer.classList.add('open'); };
+    const closeDrawer = () => { overlay.classList.remove('open'); drawer.classList.remove('open'); };
 
     btnAccount.addEventListener('click', openDrawer);
     overlay.addEventListener('click', closeDrawer);
 
-    /* Tabs */
+    /* ── Tabs ── */
     document.querySelectorAll('.auth-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -547,67 +562,75 @@
       });
     });
 
-    /* Connexion */
-    document.getElementById('formLogin').addEventListener('submit', e => {
+    /* ── Connexion Firebase ── */
+    document.getElementById('formLogin').addEventListener('submit', async e => {
       e.preventDefault();
       const email    = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-      const users    = JSON.parse(localStorage.getItem('lespot_users') || '[]');
-      const user     = users.find(u => u.email === email && u.password === password);
-      if (!user) return showError('Email ou mot de passe incorrect.');
-      login(user);
+      const btn      = e.target.querySelector('.btn-submit');
+      btn.textContent = 'Connexion…';
+      btn.disabled    = true;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        closeDrawer();
+      } catch (err) {
+        showError(firebaseError(err.code));
+      } finally {
+        btn.textContent = 'Se connecter';
+        btn.disabled    = false;
+      }
     });
 
-    /* Inscription */
-    document.getElementById('formRegister').addEventListener('submit', e => {
+    /* ── Inscription Firebase ── */
+    document.getElementById('formRegister').addEventListener('submit', async e => {
       e.preventDefault();
       const prenom   = document.getElementById('regPrenom').value.trim();
       const email    = document.getElementById('regEmail').value.trim();
       const password = document.getElementById('regPassword').value;
-      const users    = JSON.parse(localStorage.getItem('lespot_users') || '[]');
-      if (users.find(u => u.email === email)) return showError('Cet email est déjà utilisé.');
-      if (password.length < 6) return showError('Le mot de passe doit faire au moins 6 caractères.');
-      const user = { prenom, email, password };
-      users.push(user);
-      localStorage.setItem('lespot_users', JSON.stringify(users));
-      login(user);
+      const btn      = e.target.querySelector('.btn-submit');
+      btn.textContent = 'Création…';
+      btn.disabled    = true;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: prenom });
+        closeDrawer();
+      } catch (err) {
+        showError(firebaseError(err.code));
+      } finally {
+        btn.textContent = 'Créer mon compte';
+        btn.disabled    = false;
+      }
     });
 
-    /* Déconnexion */
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      localStorage.removeItem('lespot_user');
-      currentUser = null;
-      refreshAccountUI();
+    /* ── Déconnexion ── */
+    document.getElementById('btnLogout').addEventListener('click', async () => {
+      await signOut(auth);
       closeDrawer();
     });
 
-    function login(user) {
-      currentUser = user;
-      localStorage.setItem('lespot_user', JSON.stringify(user));
-      refreshAccountUI();
-      closeDrawer();
-    }
-
-    function refreshAccountUI() {
+    /* ── Etat de connexion (temps réel) ── */
+    onAuthStateChanged(auth, user => {
       const authPanel    = document.getElementById('authPanel');
       const profilePanel = document.getElementById('profilePanel');
 
-      if (currentUser) {
-        authPanel.style.display    = 'none';
+      if (user) {
+        const name = user.displayName || user.email.split('@')[0];
+        authPanel.style.display = 'none';
         profilePanel.classList.add('active');
-        document.getElementById('profileAvatar').textContent = currentUser.prenom[0].toUpperCase();
-        document.getElementById('profileName').textContent   = currentUser.prenom;
-        document.getElementById('profileEmail').textContent  = currentUser.email;
-        btnAccount.textContent   = currentUser.prenom[0].toUpperCase();
+        document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
+        document.getElementById('profileName').textContent   = name;
+        document.getElementById('profileEmail').textContent  = user.email;
+        btnAccount.textContent = name[0].toUpperCase();
         btnAccount.classList.add('logged-in');
       } else {
-        authPanel.style.display    = 'block';
+        authPanel.style.display = 'block';
         profilePanel.classList.remove('active');
-        btnAccount.textContent   = '👤';
+        btnAccount.textContent = '👤';
         btnAccount.classList.remove('logged-in');
       }
-    }
+    });
 
+    /* ── Helpers ── */
     function showError(msg) {
       const el = document.getElementById('authError');
       el.textContent = msg;
@@ -619,6 +642,19 @@
     }
 
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function firebaseError(code) {
+      const map = {
+        'auth/invalid-email':          'Adresse email invalide.',
+        'auth/user-not-found':         'Aucun compte avec cet email.',
+        'auth/wrong-password':         'Mot de passe incorrect.',
+        'auth/invalid-credential':     'Email ou mot de passe incorrect.',
+        'auth/email-already-in-use':   'Cet email est déjà utilisé.',
+        'auth/weak-password':          'Mot de passe trop faible (6 caractères min.).',
+        'auth/too-many-requests':      'Trop de tentatives. Réessaie plus tard.',
+      };
+      return map[code] || 'Une erreur est survenue. Réessaie.';
+    }
   </script>
 
 </body>
