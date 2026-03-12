@@ -74,23 +74,43 @@
     .btn-admin-add:hover { transform: scale(1.05); background: #ffd060; }
     .btn-admin-add.visible { display: flex; }
 
-    /* ── PANEL ADMIN (plein écran) ── */
+    /* ── PANEL ADMIN (bottom sheet) ── */
     .admin-panel {
       position: fixed;
-      inset: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: var(--blanc-casse);
-      z-index: 200;
+      border-radius: 24px 24px 0 0;
+      z-index: 150;
       display: flex;
       flex-direction: column;
+      max-height: 72vh;
       transform: translateY(100%);
       transition: transform 0.4s cubic-bezier(.32,1.1,.6,1);
+      box-shadow: 0 -6px 30px rgba(163,59,38,0.2);
     }
 
     .admin-panel.open { transform: translateY(0); }
 
+    .admin-handle-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px 0;
+      flex-shrink: 0;
+    }
+
+    .admin-drag-handle {
+      width: 40px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+    }
+
     .admin-header {
-      background: var(--orange-brule);
-      padding: 20px 20px 16px;
+      padding: 0 20px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -100,20 +120,20 @@
     .admin-header-title {
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
-      font-size: 1.2rem;
-      color: var(--blanc-casse);
+      font-size: 1rem;
+      color: var(--orange-brule);
     }
 
-    .admin-header-title span { color: var(--jaune-solaire); }
+    .admin-header-title span { color: var(--orange-corail); }
 
     .btn-close-admin {
-      width: 36px;
-      height: 36px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       border: none;
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      font-size: 1.2rem;
+      background: #f0e0db;
+      color: var(--orange-brule);
+      font-size: 1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -121,27 +141,32 @@
       transition: background 0.2s;
     }
 
-    .btn-close-admin:hover { background: rgba(255,255,255,0.3); }
+    .btn-close-admin:hover { background: var(--orange-corail); color: #fff; }
 
     .admin-tabs {
       display: flex;
       background: #fff;
       border-bottom: 2px solid #ede0dc;
       flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
 
+    .admin-tabs::-webkit-scrollbar { display: none; }
+
     .admin-tab {
-      flex: 1;
-      padding: 14px;
+      flex: 0 0 auto;
+      padding: 12px 16px;
       text-align: center;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: #aaa;
       cursor: pointer;
       border-bottom: 3px solid transparent;
       transition: all 0.2s;
       margin-bottom: -2px;
+      white-space: nowrap;
     }
 
     .admin-tab.active {
@@ -152,7 +177,7 @@
     .admin-body {
       flex: 1;
       overflow-y: auto;
-      padding: 20px 20px 40px;
+      padding: 16px 16px 40px;
       max-width: 600px;
       width: 100%;
       margin: 0 auto;
@@ -161,11 +186,27 @@
     .admin-section { display: none; flex-direction: column; gap: 14px; }
     .admin-section.active { display: flex; }
 
-    /* Liste des événements dans le panel admin */
+    /* Séparateur dans les sections admin */
+    .admin-divider {
+      border: none;
+      border-top: 2px solid #ede0dc;
+      margin: 4px 0 8px;
+    }
+
+    .admin-section-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Liste des événements/structures dans le panel admin */
     .admin-event-item {
       background: #fff;
       border-radius: 14px;
-      padding: 14px 16px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -173,8 +214,12 @@
       box-shadow: 0 1px 6px rgba(163,59,38,0.08);
     }
 
+    .admin-event-item.structure-item {
+      border-left-color: var(--jaune-solaire);
+    }
+
     .admin-event-icon {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       flex-shrink: 0;
     }
 
@@ -183,7 +228,7 @@
     .admin-event-name {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: #1a1a1a;
       white-space: nowrap;
       overflow: hidden;
@@ -191,7 +236,7 @@
     }
 
     .admin-event-sub {
-      font-size: 0.75rem;
+      font-size: 0.73rem;
       color: #999;
       margin-top: 2px;
     }
@@ -199,12 +244,12 @@
     .admin-event-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
     .btn-evt-delete {
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: 8px;
       border: none;
       background: #fce8e4;
       color: var(--orange-brule);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       cursor: pointer;
       transition: background 0.18s;
     }
@@ -215,7 +260,7 @@
       text-align: center;
       color: #ccc;
       font-size: 0.9rem;
-      padding: 30px 0;
+      padding: 24px 0;
     }
 
     .admin-empty span { font-size: 2rem; display: block; margin-bottom: 8px; }
@@ -519,6 +564,14 @@
     .field-group select:focus,
     .field-group textarea:focus { border-color: var(--orange-corail); }
 
+    /* Select avec option sélectionnée (lieu enregistré) */
+    .field-group select.has-value {
+      border-color: var(--jaune-solaire);
+      background: #fffbf0;
+      color: var(--orange-brule);
+      font-weight: 600;
+    }
+
     .btn-submit {
       margin-top: 4px;
       padding: 14px;
@@ -703,7 +756,7 @@
     <div class="header-top">
       <div class="app-title">Le <span>Spot</span> Angers</div>
       <div class="header-right">
-        <button class="btn-admin-add" id="btnAdminAdd">⚡ Panel Admin</button>
+        <button class="btn-admin-add" id="btnAdminAdd">⚡ Admin</button>
         <button class="btn-account" id="btnAccount">👤</button>
       </div>
     </div>
@@ -725,7 +778,7 @@
     </div>
   </div>
 
-  <!-- OVERLAY -->
+  <!-- OVERLAY (pour drawers compte/détail) -->
   <div class="overlay" id="overlay"></div>
 
   <!-- DRAWER : COMPTE -->
@@ -776,8 +829,11 @@
     </div>
   </div>
 
-  <!-- PANEL ADMIN (plein écran) -->
+  <!-- PANEL ADMIN (bottom sheet) -->
   <div class="admin-panel" id="adminPanel">
+    <div class="admin-handle-bar">
+      <div class="admin-drag-handle"></div>
+    </div>
     <div class="admin-header">
       <div class="admin-header-title">⚡ Panel <span>Admin</span></div>
       <button class="btn-close-admin" id="btnCloseAdmin">✕</button>
@@ -785,14 +841,15 @@
 
     <div class="admin-tabs">
       <div class="admin-tab active" data-atab="add">➕ Ajouter</div>
-      <div class="admin-tab" data-atab="manage">📋 Gérer les événements</div>
+      <div class="admin-tab" data-atab="manage">📋 Événements</div>
+      <div class="admin-tab" data-atab="structures">🏠 Lieux</div>
     </div>
 
     <div class="admin-body">
 
-      <!-- Onglet : Ajouter -->
+      <!-- Onglet : Ajouter un événement -->
       <div class="admin-section active" id="adminSectionAdd">
-        <form id="formAddEvent" style="display:flex;flex-direction:column;gap:14px;">
+        <form id="formAddEvent" style="display:flex;flex-direction:column;gap:12px;">
           <div class="field-group">
             <label>Nom de l'événement</label>
             <input type="text" id="evtTitle" placeholder="Soirée étudiante..." required />
@@ -814,8 +871,17 @@
             <label>Heure</label>
             <input type="time" id="evtTime" />
           </div>
+
+          <!-- Sélecteur de lieu enregistré -->
           <div class="field-group">
-            <label>Lieu</label>
+            <label>Lieu enregistré</label>
+            <select id="evtStructure">
+              <option value="">— Choisir un lieu enregistré —</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label>Lieu (si non enregistré)</label>
             <input type="text" id="evtPlace" placeholder="Le Chabada, Bar La Maine..." />
           </div>
           <div class="field-group">
@@ -835,10 +901,52 @@
         </form>
       </div>
 
-      <!-- Onglet : Gérer -->
+      <!-- Onglet : Gérer les événements -->
       <div class="admin-section" id="adminSectionManage">
         <div id="adminEventsList">
           <div class="admin-empty"><span>📅</span>Chargement…</div>
+        </div>
+      </div>
+
+      <!-- Onglet : Gérer les lieux/structures -->
+      <div class="admin-section" id="adminSectionStructures">
+
+        <!-- Formulaire ajout lieu -->
+        <div class="admin-section-label">Ajouter un lieu</div>
+        <form id="formAddStructure" style="display:flex;flex-direction:column;gap:12px;">
+          <div class="field-group">
+            <label>Nom du lieu</label>
+            <input type="text" id="strName" placeholder="Bar La Maine, Le Chabada..." required />
+          </div>
+          <div class="field-group">
+            <label>Catégorie principale</label>
+            <select id="strCat">
+              <option value="bar">🍺 Bar</option>
+              <option value="bde">🎓 BDE</option>
+              <option value="culture">🎨 Culture</option>
+              <option value="evenements">🎉 Évènements</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Adresse</label>
+            <input type="text" id="strAddress" placeholder="12 rue de la..." />
+          </div>
+          <div class="field-group">
+            <label>Instagram</label>
+            <input type="url" id="strInstagram" placeholder="https://instagram.com/..." />
+          </div>
+          <div class="field-group">
+            <label>Site internet</label>
+            <input type="url" id="strWebsite" placeholder="https://..." />
+          </div>
+          <div class="auth-error" id="structureError"></div>
+          <button type="submit" class="btn-submit">💾 Enregistrer le lieu</button>
+        </form>
+
+        <hr class="admin-divider" />
+        <div class="admin-section-label">Lieux enregistrés</div>
+        <div id="adminStructuresList">
+          <div class="admin-empty"><span>🏠</span>Aucun lieu enregistré</div>
         </div>
       </div>
 
@@ -886,6 +994,7 @@
     let isAdmin       = false;
     let selectedDate  = dateKey(new Date());
     let activeCats    = new Set(['bar','bde','culture','evenements']);
+    let structures    = [];
 
     const catMeta = {
       bar:        { icon: '🍺', label: 'Bar' },
@@ -932,7 +1041,7 @@
       });
     });
 
-    /* ── Drawers ── */
+    /* ── Drawers (compte + détail) ── */
     const overlay       = document.getElementById('overlay');
     let   activeDrawer  = null;
 
@@ -953,26 +1062,30 @@
 
     document.getElementById('btnAccount').addEventListener('click', () => openDrawer('drawerAccount'));
 
-    // Panel admin
+    /* ── Panel admin (bottom sheet, sans overlay) ── */
     document.getElementById('btnAdminAdd').addEventListener('click', () => {
       document.getElementById('evtDate').value = selectedDate;
       document.getElementById('adminPanel').classList.add('open');
-      loadAdminEvents();
+      // Activer l'onglet Ajouter par défaut
+      switchAdminTab('add');
     });
 
     document.getElementById('btnCloseAdmin').addEventListener('click', () => {
       document.getElementById('adminPanel').classList.remove('open');
     });
 
+    function switchAdminTab(tabKey) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+      document.querySelector(`[data-atab="${tabKey}"]`).classList.add('active');
+      document.getElementById('adminSection' + cap(tabKey)).classList.add('active');
+      if (tabKey === 'manage') loadAdminEvents();
+      if (tabKey === 'structures') renderStructuresList();
+    }
+
     // Tabs admin
     document.querySelectorAll('.admin-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById('adminSection' + cap(tab.dataset.atab)).classList.add('active');
-        if (tab.dataset.atab === 'manage') loadAdminEvents();
-      });
+      tab.addEventListener('click', () => switchAdminTab(tab.dataset.atab));
     });
 
     /* ── Auth tabs ── */
@@ -1034,7 +1147,6 @@
       if (user) {
         const name = user.displayName || user.email.split('@')[0];
 
-        // Mettre à jour l'UI immédiatement, sans attendre Firestore
         authPanel.style.display = 'none';
         profilePanel.classList.add('active');
         document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
@@ -1043,7 +1155,7 @@
         btnAccount.textContent = name[0].toUpperCase();
         btnAccount.classList.add('logged-in');
 
-        // Afficher l'UID
+        // Afficher l'UID (copiable)
         const uidEl = document.getElementById('profileUid');
         uidEl.textContent = '🔑 ' + user.uid;
         uidEl.style.display = 'block';
@@ -1075,6 +1187,7 @@
           roleEl.textContent = '⚡ Administrateur';
           roleEl.style.display = 'block';
           btnAdminAdd.classList.add('visible');
+          loadStructures(); // charger les lieux dès la connexion admin
         } else {
           roleEl.style.display = 'none';
           btnAdminAdd.classList.remove('visible');
@@ -1092,6 +1205,102 @@
       }
     });
 
+    /* ── Structures ── */
+    let unsubStructures = null;
+
+    function loadStructures() {
+      if (unsubStructures) { unsubStructures(); unsubStructures = null; }
+
+      unsubStructures = onSnapshot(collection(db, 'structures'), snap => {
+        structures = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderStructuresList();
+        updateStructureSelect();
+      });
+    }
+
+    function renderStructuresList() {
+      const container = document.getElementById('adminStructuresList');
+      if (structures.length === 0) {
+        container.innerHTML = '<div class="admin-empty"><span>🏠</span>Aucun lieu enregistré</div>';
+        return;
+      }
+      container.innerHTML = '';
+      structures.forEach(str => {
+        const meta = catMeta[str.category] || { icon: '📌', label: str.category };
+        const item = document.createElement('div');
+        item.className = 'admin-event-item structure-item';
+        item.innerHTML = `
+          <div class="admin-event-icon">${meta.icon}</div>
+          <div class="admin-event-info">
+            <div class="admin-event-name">${str.name}</div>
+            <div class="admin-event-sub">${meta.label}${str.address ? ' · ' + str.address : ''}</div>
+          </div>
+          <div class="admin-event-actions">
+            <button class="btn-evt-delete">🗑</button>
+          </div>
+        `;
+        item.querySelector('.btn-evt-delete').addEventListener('click', async () => {
+          if (confirm(`Supprimer "${str.name}" ?`)) {
+            await deleteDoc(doc(db, 'structures', str.id));
+          }
+        });
+        container.appendChild(item);
+      });
+    }
+
+    function updateStructureSelect() {
+      const select = document.getElementById('evtStructure');
+      const current = select.value;
+      select.innerHTML = '<option value="">— Choisir un lieu enregistré —</option>';
+      structures.forEach(str => {
+        const meta = catMeta[str.category] || { icon: '📌', label: str.category };
+        const opt = document.createElement('option');
+        opt.value = str.id;
+        opt.textContent = `${meta.icon} ${str.name}`;
+        select.appendChild(opt);
+      });
+      select.value = current;
+      select.className = current ? 'has-value' : '';
+    }
+
+    // Pré-remplir le formulaire événement depuis le lieu sélectionné
+    document.getElementById('evtStructure').addEventListener('change', () => {
+      const id  = document.getElementById('evtStructure').value;
+      const sel = document.getElementById('evtStructure');
+      sel.className = id ? 'has-value' : '';
+      if (!id) return;
+      const str = structures.find(s => s.id === id);
+      if (!str) return;
+      document.getElementById('evtPlace').value     = str.address ? str.name + ' — ' + str.address : str.name;
+      document.getElementById('evtInstagram').value = str.instagram || '';
+      document.getElementById('evtWebsite').value   = str.website   || '';
+      if (str.category) document.getElementById('evtCat').value = str.category;
+    });
+
+    /* ── Ajout lieu (admin) ── */
+    document.getElementById('formAddStructure').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!isAdmin) return;
+      const btn = e.target.querySelector('.btn-submit');
+      btn.textContent = 'Enregistrement…'; btn.disabled = true;
+      try {
+        await addDoc(collection(db, 'structures'), {
+          name:      document.getElementById('strName').value.trim(),
+          category:  document.getElementById('strCat').value,
+          address:   document.getElementById('strAddress').value.trim(),
+          instagram: document.getElementById('strInstagram').value.trim(),
+          website:   document.getElementById('strWebsite').value.trim(),
+          createdAt: serverTimestamp(),
+        });
+        e.target.reset();
+        hideError('structureError');
+      } catch (err) {
+        showError('structureError', 'Erreur lors de l\'enregistrement.');
+      } finally {
+        btn.textContent = '💾 Enregistrer le lieu'; btn.disabled = false;
+      }
+    });
+
     /* ── Ajout événement (admin) ── */
     document.getElementById('formAddEvent').addEventListener('submit', async e => {
       e.preventDefault();
@@ -1100,25 +1309,23 @@
       btn.textContent = 'Publication…'; btn.disabled = true;
       try {
         await addDoc(collection(db, 'events'), {
-          title:     document.getElementById('evtTitle').value.trim(),
-          category:  document.getElementById('evtCat').value,
-          date:      document.getElementById('evtDate').value,
-          time:      document.getElementById('evtTime').value,
-          place:     document.getElementById('evtPlace').value.trim(),
-          desc:      document.getElementById('evtDesc').value.trim(),
-          instagram: document.getElementById('evtInstagram').value.trim(),
-          website:   document.getElementById('evtWebsite').value.trim(),
-          createdAt: serverTimestamp(),
+          title:       document.getElementById('evtTitle').value.trim(),
+          category:    document.getElementById('evtCat').value,
+          date:        document.getElementById('evtDate').value,
+          time:        document.getElementById('evtTime').value,
+          place:       document.getElementById('evtPlace').value.trim(),
+          desc:        document.getElementById('evtDesc').value.trim(),
+          instagram:   document.getElementById('evtInstagram').value.trim(),
+          website:     document.getElementById('evtWebsite').value.trim(),
+          structureId: document.getElementById('evtStructure').value || null,
+          createdAt:   serverTimestamp(),
         });
         e.target.reset();
         document.getElementById('evtDate').value = selectedDate;
+        document.getElementById('evtStructure').className = '';
         loadEvents();
         // Passer sur l'onglet Gérer
-        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-        document.querySelector('[data-atab="manage"]').classList.add('active');
-        document.getElementById('adminSectionManage').classList.add('active');
-        loadAdminEvents();
+        switchAdminTab('manage');
       } catch (err) {
         showError('adminError', 'Erreur lors de la publication.');
       } finally {
@@ -1154,7 +1361,7 @@
               <div class="admin-event-sub">${meta.label} · ${formatDate(evt.date)}${evt.time ? ' · ' + evt.time : ''}${evt.place ? ' · ' + evt.place : ''}</div>
             </div>
             <div class="admin-event-actions">
-              <button class="btn-evt-delete">🗑 Supprimer</button>
+              <button class="btn-evt-delete">🗑</button>
             </div>
           `;
           item.querySelector('.btn-evt-delete').addEventListener('click', async () => {
@@ -1171,7 +1378,6 @@
     let unsubEvents = null;
 
     function loadEvents() {
-      // Désabonner l'ancien listener
       if (unsubEvents) { unsubEvents(); unsubEvents = null; }
 
       const section = document.getElementById('eventsSection');
@@ -1186,7 +1392,6 @@
         return;
       }
 
-      // Pas de orderBy pour éviter l'index composite Firestore
       const q = query(
         collection(db, 'events'),
         where('date', '==', selectedDate)
@@ -1215,18 +1420,16 @@
             <div class="event-cat-icon">${meta.icon}</div>
             <div class="event-info">
               <div class="event-title">${evt.title}</div>
-              <div class="event-meta">${meta.label} · ${formatDate(evt.date)}</div>
+              <div class="event-meta">${meta.label} · ${formatDate(evt.date)}${evt.time ? ' · ' + evt.time : ''}${evt.place ? ' · ' + evt.place : ''}</div>
             </div>
             ${isAdmin ? `<div class="event-admin-btns"><button class="btn-delete-event" data-id="${docSnap.id}" title="Supprimer">🗑</button></div>` : '<div class="event-arrow">›</div>'}
           `;
 
-          // Clic sur la carte → détail
           card.addEventListener('click', e => {
             if (e.target.closest('.btn-delete-event')) return;
             openDetail(evt, meta);
           });
 
-          // Suppression (admin)
           const btnDel = card.querySelector('.btn-delete-event');
           if (btnDel) {
             btnDel.addEventListener('click', async e => {
