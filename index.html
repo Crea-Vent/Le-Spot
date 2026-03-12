@@ -12,12 +12,76 @@
     }
 
     body {
-      height: 100vh;
+      min-height: 100vh;
+      background-color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* --- DATE SELECTOR --- */
+    .date-bar {
+      width: 100%;
+      background-color: #4a8c82;
+      padding: 16px 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .date-bar::-webkit-scrollbar { display: none; }
+
+    .date-list {
+      display: flex;
+      gap: 10px;
+      width: max-content;
+    }
+
+    .date-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 72px;
+      border-radius: 14px;
+      background-color: #6aada3;
+      cursor: pointer;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .date-card .day {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #d6eae8;
+    }
+
+    .date-card .month {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #d6eae8;
+      margin-top: 2px;
+    }
+
+    .date-card.active {
+      background-color: #ffffff;
+    }
+
+    .date-card.active .day,
+    .date-card.active .month {
+      color: #111111;
+    }
+
+    .date-card.faded {
+      opacity: 0.55;
+    }
+
+    /* --- MAIN CONTENT --- */
+    .main {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     h1 {
@@ -29,6 +93,47 @@
   </style>
 </head>
 <body>
-  <h1>Le spot-Angers</h1>
+
+  <div class="date-bar">
+    <div class="date-list" id="dateList"></div>
+  </div>
+
+  <div class="main">
+    <h1>Le spot-Angers</h1>
+  </div>
+
+  <script>
+    const months = ['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+    const list = document.getElementById('dateList');
+    const today = new Date();
+
+    // Affiche 7 jours : 3 avant aujourd'hui, aujourd'hui, 3 après
+    for (let i = -3; i <= 3; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+
+      const card = document.createElement('div');
+      card.className = 'date-card' + (i === 0 ? ' active' : '') + (i < -1 ? ' faded' : '');
+
+      card.innerHTML = `
+        <span class="day">${String(d.getDate()).padStart(2,'0')}</span>
+        <span class="month">${months[d.getMonth()]}</span>
+      `;
+
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+
+      list.appendChild(card);
+    }
+
+    // Scroll pour centrer sur aujourd'hui
+    const activeCard = list.querySelector('.active');
+    if (activeCard) {
+      activeCard.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+    }
+  </script>
+
 </body>
 </html>
