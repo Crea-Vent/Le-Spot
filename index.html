@@ -3,35 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Le spot-Angers</title>
+  <title>Le Spot Angers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --orange-brule:  #A33B26;
+      --orange-corail: #FF6B45;
+      --jaune-solaire: #FFC845;
+      --blanc-casse:   #F9F7F2;
+      --dark-tint:     #7a2b1a;
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       min-height: 100vh;
-      background-color: #f5f5f5;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--blanc-casse);
+      font-family: 'Inter', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* --- DATE BAR --- */
-    .date-bar {
+    /* ── HEADER ── */
+    .header {
       width: 100%;
-      background-color: #4a8c82;
-      padding: 20px 12px 16px;
+      background-color: var(--orange-brule);
+      padding: 18px 20px 0;
     }
 
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .app-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--blanc-casse);
+      letter-spacing: 0.04em;
+    }
+
+    .app-title span {
+      color: var(--jaune-solaire);
+    }
+
+    .header-badge {
+      background-color: var(--orange-corail);
+      color: var(--blanc-casse);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── DATE LIST ── */
     .date-list {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      flex-wrap: nowrap;
+      gap: 8px;
+      padding-bottom: 16px;
     }
 
     .date-card {
@@ -39,74 +76,71 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 62px;
-      height: 70px;
+      width: 58px;
+      height: 66px;
       border-radius: 14px;
-      background-color: #6aada3;
+      background-color: var(--dark-tint);
       cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
+      transition: transform 0.15s, background 0.2s;
       user-select: none;
       flex-shrink: 0;
     }
 
-    .date-card:hover {
-      transform: scale(1.05);
-    }
+    .date-card:hover { transform: scale(1.05); }
 
     .date-card .day {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #d6eae8;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #e8c5bc;
     }
 
     .date-card .month {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 500;
-      color: #d6eae8;
+      color: #e8c5bc;
       margin-top: 2px;
     }
 
-    /* Aujourd'hui non sélectionné */
     .date-card.today {
-      background-color: #3d7a70;
-      box-shadow: 0 0 0 2px #ffffff66;
+      background-color: var(--orange-corail);
+      box-shadow: 0 0 0 2px var(--jaune-solaire);
     }
 
-    /* Actif (sélectionné) */
+    .date-card.today .day,
+    .date-card.today .month { color: #fff; }
+
     .date-card.active {
-      background-color: #ffffff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      transform: scale(1.1);
+      background-color: var(--blanc-casse);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      transform: scale(1.12);
     }
 
     .date-card.active .day,
     .date-card.active .month {
-      color: #1a1a1a;
-      font-weight: 700;
+      color: var(--orange-brule);
+      font-weight: 800;
     }
 
-    .date-card.faded {
-      opacity: 0.5;
-    }
+    .date-card.faded { opacity: 0.45; }
 
-    /* --- CATEGORIES --- */
+    /* ── CATEGORIES ── */
     .categories {
       width: 100%;
-      background-color: #ffffff;
+      background-color: #fff;
       padding: 14px 16px;
       display: flex;
       gap: 10px;
       overflow-x: auto;
       scrollbar-width: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      transform-origin: top;
+      box-shadow: 0 2px 10px rgba(163,59,38,0.1);
       animation: slideDown 0.25s ease;
     }
 
     .categories::-webkit-scrollbar { display: none; }
 
     @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-8px); }
+      from { opacity: 0; transform: translateY(-6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -116,9 +150,10 @@
       gap: 6px;
       padding: 8px 16px;
       border-radius: 20px;
-      background-color: #eef7f6;
-      color: #3d7a70;
-      font-size: 0.85rem;
+      background-color: #f5e8e5;
+      color: var(--orange-brule);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.83rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
@@ -126,39 +161,50 @@
       transition: all 0.18s;
     }
 
-    .cat-chip:hover {
-      background-color: #d5eeeb;
-    }
+    .cat-chip:hover { background-color: #f0d8d3; }
 
     .cat-chip.selected {
-      background-color: #4a8c82;
-      color: #ffffff;
-      border-color: #4a8c82;
+      background-color: var(--orange-brule);
+      color: var(--blanc-casse);
+      border-color: var(--orange-brule);
     }
 
-    .cat-chip .icon {
-      font-size: 1rem;
-    }
+    .cat-chip .icon { font-size: 1rem; }
 
-    /* --- MAIN --- */
+    /* ── MAIN ── */
     .main {
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 10px;
     }
 
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      color: #111111;
-      letter-spacing: 0.05em;
+    .main h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: var(--orange-brule);
+      letter-spacing: 0.04em;
+    }
+
+    .main h1 span { color: var(--orange-corail); }
+
+    .main p {
+      font-size: 0.95rem;
+      color: #999;
+      font-weight: 500;
     }
   </style>
 </head>
 <body>
 
-  <div class="date-bar">
+  <div class="header">
+    <div class="header-top">
+      <div class="app-title">Le <span>Spot</span> Angers</div>
+      <div class="header-badge">Angers 🌅</div>
+    </div>
     <div class="date-list" id="dateList"></div>
   </div>
 
@@ -170,7 +216,8 @@
   </div>
 
   <div class="main">
-    <h1>Le spot-Angers</h1>
+    <h1>Le <span>Spot</span><br>Angers</h1>
+    <p>La nouvelle app angevine 🌇</p>
   </div>
 
   <script>
@@ -194,20 +241,15 @@
       `;
 
       card.addEventListener('click', () => {
-        document.querySelectorAll('.date-card').forEach(c => {
-          c.classList.remove('active');
-        });
+        document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
       });
 
       list.appendChild(card);
     }
 
-    // Catégories
     document.querySelectorAll('.cat-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        chip.classList.toggle('selected');
-      });
+      chip.addEventListener('click', () => chip.classList.toggle('selected'));
     });
   </script>
 
