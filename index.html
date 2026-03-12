@@ -51,13 +51,28 @@
 
     .app-title span { color: var(--jaune-solaire); }
 
-    .header-right {
-      display: flex;
+    .header-right { display: flex; align-items: center; gap: 8px; }
+
+    /* Bouton admin + */
+    .btn-admin-add {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--jaune-solaire);
+      border: none;
+      display: none;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--orange-brule);
+      transition: transform 0.15s;
     }
 
-    /* Avatar / bouton compte */
+    .btn-admin-add:hover { transform: scale(1.1); }
+    .btn-admin-add.visible { display: flex; }
+
     .btn-account {
       width: 38px;
       height: 38px;
@@ -68,10 +83,9 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.15s;
       font-size: 1.1rem;
       color: var(--blanc-casse);
-      flex-shrink: 0;
+      transition: transform 0.15s;
     }
 
     .btn-account:hover { transform: scale(1.08); }
@@ -138,10 +152,7 @@
     }
 
     .date-card.active .day,
-    .date-card.active .month {
-      color: var(--orange-brule);
-      font-weight: 800;
-    }
+    .date-card.active .month { color: var(--orange-brule); font-weight: 800; }
 
     .date-card.faded { opacity: 0.45; }
 
@@ -183,49 +194,86 @@
       border-color: var(--orange-brule);
     }
 
-    .cat-chip .icon { font-size: 1rem; }
-
-    /* ── MAIN ── */
-    .main {
-      flex: 1;
+    /* ── EVENTS LIST ── */
+    .events-section {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
+      gap: 14px;
+    }
+
+    .events-empty {
+      text-align: center;
+      color: #bbb;
+      font-size: 0.9rem;
+      padding: 40px 0;
+    }
+
+    .events-empty span { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+    .event-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(163,59,38,0.08);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border-left: 4px solid var(--orange-corail);
+    }
+
+    .event-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(163,59,38,0.15);
+    }
+
+    .event-cat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background-color: #f5e8e5;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      font-size: 1.4rem;
+      flex-shrink: 0;
     }
 
-    .main h1 {
+    .event-info { flex: 1; min-width: 0; }
+
+    .event-title {
       font-family: 'Montserrat', sans-serif;
-      font-size: 2.6rem;
-      font-weight: 800;
-      color: var(--orange-brule);
-      letter-spacing: 0.04em;
-      text-align: center;
-    }
-
-    .main h1 span { color: var(--orange-corail); }
-
-    .main p {
+      font-weight: 700;
       font-size: 0.95rem;
-      color: #999;
-      font-weight: 500;
+      color: #1a1a1a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* ══════════════════════════════
-       OVERLAY + DRAWER COMPTE
-    ══════════════════════════════ */
+    .event-meta {
+      font-size: 0.78rem;
+      color: #999;
+      margin-top: 3px;
+    }
+
+    .event-arrow {
+      color: #ccc;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    /* ── OVERLAY + DRAWERS ── */
     .overlay {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.45);
       z-index: 100;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; } to { opacity: 1; }
     }
 
     .overlay.open { display: block; }
@@ -243,6 +291,8 @@
       transition: transform 0.35s cubic-bezier(.32,1.2,.6,1);
       max-width: 480px;
       margin: 0 auto;
+      max-height: 92vh;
+      overflow-y: auto;
     }
 
     .drawer.open { transform: translateY(0); }
@@ -255,7 +305,15 @@
       margin: 0 auto 24px;
     }
 
-    /* Tabs Connexion / Inscription */
+    .drawer-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--orange-brule);
+      margin-bottom: 20px;
+    }
+
+    /* ── AUTH DRAWER ── */
     .auth-tabs {
       display: flex;
       background: #ede0dc;
@@ -282,15 +340,10 @@
       color: var(--blanc-casse);
     }
 
-    /* Formulaires */
     .auth-form { display: none; flex-direction: column; gap: 14px; }
     .auth-form.active { display: flex; }
 
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
 
     .field-group label {
       font-size: 0.78rem;
@@ -300,7 +353,9 @@
       letter-spacing: 0.05em;
     }
 
-    .field-group input {
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
       padding: 12px 14px;
       border-radius: 12px;
       border: 2px solid #e5d5d0;
@@ -312,7 +367,10 @@
       transition: border-color 0.2s;
     }
 
-    .field-group input:focus { border-color: var(--orange-corail); }
+    .field-group textarea { resize: vertical; min-height: 80px; }
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus { border-color: var(--orange-corail); }
 
     .btn-submit {
       margin-top: 4px;
@@ -328,14 +386,9 @@
       transition: background 0.2s, transform 0.1s;
     }
 
-    .btn-submit:hover {
-      background: var(--orange-corail);
-      transform: translateY(-1px);
-    }
+    .btn-submit:hover { background: var(--orange-corail); transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    .btn-submit:active { transform: translateY(0); }
-
-    /* Message d'erreur */
     .auth-error {
       display: none;
       background: #fce8e4;
@@ -348,8 +401,8 @@
 
     .auth-error.show { display: block; }
 
-    /* Profil connecté dans le drawer */
-    .profile-view { display: none; flex-direction: column; gap: 20px; }
+    /* ── PROFILE DRAWER ── */
+    .profile-view { display: none; flex-direction: column; gap: 16px; }
     .profile-view.active { display: flex; }
 
     .profile-avatar {
@@ -375,11 +428,18 @@
       color: var(--orange-brule);
     }
 
-    .profile-email {
+    .profile-email { text-align: center; font-size: 0.85rem; color: #999; margin-top: -10px; }
+
+    .profile-role {
       text-align: center;
-      font-size: 0.85rem;
-      color: #999;
-      margin-top: -14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--jaune-solaire);
+      color: var(--orange-brule);
+      width: fit-content;
+      margin: 0 auto;
     }
 
     .btn-logout {
@@ -395,10 +455,85 @@
       transition: all 0.2s;
     }
 
-    .btn-logout:hover {
-      background: var(--orange-brule);
-      color: var(--blanc-casse);
+    .btn-logout:hover { background: var(--orange-brule); color: var(--blanc-casse); }
+
+    /* ── DETAIL ÉVÉNEMENT ── */
+    .detail-cover {
+      width: 100%;
+      height: 140px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--orange-brule), var(--orange-corail));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      margin-bottom: 16px;
     }
+
+    .detail-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--orange-brule);
+      margin-bottom: 4px;
+    }
+
+    .detail-date-cat {
+      font-size: 0.82rem;
+      color: #999;
+      margin-bottom: 16px;
+    }
+
+    .detail-desc {
+      font-size: 0.92rem;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .detail-links { display: flex; flex-direction: column; gap: 10px; }
+
+    .detail-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      background: #fff;
+      text-decoration: none;
+      color: #1a1a1a;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 2px solid #ede0dc;
+      transition: border-color 0.18s, background 0.18s;
+    }
+
+    .detail-link:hover { border-color: var(--orange-corail); background: #fff8f6; }
+    .detail-link span { font-size: 1.2rem; }
+
+    /* Badge admin sur carte */
+    .event-admin-btns {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-delete-event {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: none;
+      background: #fce8e4;
+      color: var(--orange-brule);
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.18s;
+    }
+
+    .btn-delete-event:hover { background: var(--orange-corail); color: #fff; }
   </style>
 </head>
 <body>
@@ -408,7 +543,8 @@
     <div class="header-top">
       <div class="app-title">Le <span>Spot</span> Angers</div>
       <div class="header-right">
-        <button class="btn-account" id="btnAccount" title="Mon compte">👤</button>
+        <button class="btn-admin-add" id="btnAdminAdd" title="Ajouter un événement">＋</button>
+        <button class="btn-account" id="btnAccount">👤</button>
       </div>
     </div>
     <div class="date-list" id="dateList"></div>
@@ -416,35 +552,32 @@
 
   <!-- CATEGORIES -->
   <div class="categories">
-    <div class="cat-chip selected" data-cat="bar"><span class="icon">🍺</span> Bar</div>
-    <div class="cat-chip" data-cat="bde"><span class="icon">🎓</span> BDE</div>
-    <div class="cat-chip" data-cat="culture"><span class="icon">🎨</span> Culture</div>
-    <div class="cat-chip" data-cat="evenements"><span class="icon">🎉</span> Évènements</div>
+    <div class="cat-chip selected" data-cat="bar"><span>🍺</span> Bar</div>
+    <div class="cat-chip selected" data-cat="bde"><span>🎓</span> BDE</div>
+    <div class="cat-chip selected" data-cat="culture"><span>🎨</span> Culture</div>
+    <div class="cat-chip selected" data-cat="evenements"><span>🎉</span> Évènements</div>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
-    <h1>Le <span>Spot</span><br>Angers</h1>
-    <p>La nouvelle app angevine 🌇</p>
+  <!-- LISTE ÉVÉNEMENTS -->
+  <div class="events-section" id="eventsSection">
+    <div class="events-empty" id="eventsEmpty">
+      <span>📅</span>Aucun événement pour cette date
+    </div>
   </div>
 
   <!-- OVERLAY -->
   <div class="overlay" id="overlay"></div>
 
-  <!-- DRAWER COMPTE -->
-  <div class="drawer" id="drawer">
+  <!-- DRAWER : COMPTE -->
+  <div class="drawer" id="drawerAccount">
     <div class="drawer-handle"></div>
 
-    <!-- Formulaires auth (non connecté) -->
     <div id="authPanel">
       <div class="auth-tabs">
         <div class="auth-tab active" data-tab="login">Connexion</div>
         <div class="auth-tab" data-tab="register">Inscription</div>
       </div>
-
       <div class="auth-error" id="authError"></div>
-
-      <!-- Connexion -->
       <form class="auth-form active" id="formLogin">
         <div class="field-group">
           <label>Email</label>
@@ -456,8 +589,6 @@
         </div>
         <button type="submit" class="btn-submit">Se connecter</button>
       </form>
-
-      <!-- Inscription -->
       <form class="auth-form" id="formRegister">
         <div class="field-group">
           <label>Prénom</label>
@@ -475,29 +606,78 @@
       </form>
     </div>
 
-    <!-- Profil connecté -->
     <div class="profile-view" id="profilePanel">
       <div class="profile-avatar" id="profileAvatar"></div>
       <div class="profile-name" id="profileName"></div>
       <div class="profile-email" id="profileEmail"></div>
+      <div class="profile-role" id="profileRole" style="display:none"></div>
       <button class="btn-logout" id="btnLogout">Se déconnecter</button>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp }                              from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAnalytics }                              from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged,
-      updateProfile
-    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+  <!-- DRAWER : AJOUT ÉVÉNEMENT (admin) -->
+  <div class="drawer" id="drawerAdmin">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title">➕ Ajouter un événement</div>
+    <form id="formAddEvent" style="display:flex;flex-direction:column;gap:14px;">
+      <div class="field-group">
+        <label>Nom de l'événement</label>
+        <input type="text" id="evtTitle" placeholder="Soirée étudiante..." required />
+      </div>
+      <div class="field-group">
+        <label>Catégorie</label>
+        <select id="evtCat">
+          <option value="bar">🍺 Bar</option>
+          <option value="bde">🎓 BDE</option>
+          <option value="culture">🎨 Culture</option>
+          <option value="evenements">🎉 Évènements</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Date</label>
+        <input type="date" id="evtDate" required />
+      </div>
+      <div class="field-group">
+        <label>Description</label>
+        <textarea id="evtDesc" placeholder="Décris l'événement..."></textarea>
+      </div>
+      <div class="field-group">
+        <label>Lien Instagram</label>
+        <input type="url" id="evtInstagram" placeholder="https://instagram.com/..." />
+      </div>
+      <div class="field-group">
+        <label>Site internet</label>
+        <input type="url" id="evtWebsite" placeholder="https://..." />
+      </div>
+      <div class="auth-error" id="adminError"></div>
+      <button type="submit" class="btn-submit">Publier l'événement</button>
+    </form>
+  </div>
 
-    /* ── Firebase init ── */
-    const firebaseConfig = {
+  <!-- DRAWER : DÉTAIL ÉVÉNEMENT -->
+  <div class="drawer" id="drawerDetail">
+    <div class="drawer-handle"></div>
+    <div class="detail-cover" id="detailCover"></div>
+    <div class="detail-title" id="detailTitle"></div>
+    <div class="detail-date-cat" id="detailDateCat"></div>
+    <div class="detail-desc" id="detailDesc"></div>
+    <div class="detail-links" id="detailLinks"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp }   from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAnalytics }    from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+    import {
+      getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      signOut, onAuthStateChanged, updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import {
+      getFirestore, collection, doc, setDoc, getDoc, addDoc,
+      query, where, orderBy, onSnapshot, deleteDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    /* ── Init Firebase ── */
+    const app = initializeApp({
       apiKey:            "AIzaSyBRGJV8pMv4rcr93DUWVeCULJmojRHOrV4",
       authDomain:        "le-spot-angers.firebaseapp.com",
       projectId:         "le-spot-angers",
@@ -505,11 +685,23 @@
       messagingSenderId: "567848754489",
       appId:             "1:567848754489:web:b5c4c8e6910009235d5ce8",
       measurementId:     "G-T0D0EK8WBP"
-    };
-
-    const app       = initializeApp(firebaseConfig);
+    });
     const analytics = getAnalytics(app);
-    const auth      = getAuth(app);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    /* ── State ── */
+    let currentUser   = null;
+    let isAdmin       = false;
+    let selectedDate  = dateKey(new Date());
+    let activeCats    = new Set(['bar','bde','culture','evenements']);
+
+    const catMeta = {
+      bar:        { icon: '🍺', label: 'Bar' },
+      bde:        { icon: '🎓', label: 'BDE' },
+      culture:    { icon: '🎨', label: 'Culture' },
+      evenements: { icon: '🎉', label: 'Évènements' },
+    };
 
     /* ── Dates ── */
     const months   = ['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
@@ -524,6 +716,7 @@
       if (i === 0) cls += ' today active';
       if (i < -1) cls += ' faded';
       card.className = cls;
+      card.dataset.key = dateKey(d);
       card.innerHTML = `
         <span class="day">${String(d.getDate()).padStart(2,'0')}</span>
         <span class="month">${months[d.getMonth()]}</span>
@@ -531,75 +724,88 @@
       card.addEventListener('click', () => {
         document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
+        selectedDate = card.dataset.key;
+        loadEvents();
       });
       dateList.appendChild(card);
     }
 
     /* ── Catégories ── */
-    document.querySelectorAll('.cat-chip').forEach(chip =>
-      chip.addEventListener('click', () => chip.classList.toggle('selected'))
-    );
+    document.querySelectorAll('.cat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('selected');
+        const cat = chip.dataset.cat;
+        if (chip.classList.contains('selected')) activeCats.add(cat);
+        else activeCats.delete(cat);
+        loadEvents();
+      });
+    });
 
-    /* ── Drawer ── */
-    const overlay    = document.getElementById('overlay');
-    const drawer     = document.getElementById('drawer');
-    const btnAccount = document.getElementById('btnAccount');
+    /* ── Drawers ── */
+    const overlay       = document.getElementById('overlay');
+    let   activeDrawer  = null;
 
-    const openDrawer  = () => { overlay.classList.add('open'); drawer.classList.add('open'); };
-    const closeDrawer = () => { overlay.classList.remove('open'); drawer.classList.remove('open'); };
+    function openDrawer(id) {
+      if (activeDrawer) activeDrawer.classList.remove('open');
+      activeDrawer = document.getElementById(id);
+      overlay.classList.add('open');
+      activeDrawer.classList.add('open');
+    }
 
-    btnAccount.addEventListener('click', openDrawer);
+    function closeDrawer() {
+      overlay.classList.remove('open');
+      if (activeDrawer) activeDrawer.classList.remove('open');
+      activeDrawer = null;
+    }
+
     overlay.addEventListener('click', closeDrawer);
 
-    /* ── Tabs ── */
+    document.getElementById('btnAccount').addEventListener('click', () => openDrawer('drawerAccount'));
+    document.getElementById('btnAdminAdd').addEventListener('click', () => {
+      document.getElementById('evtDate').value = selectedDate;
+      openDrawer('drawerAdmin');
+    });
+
+    /* ── Auth tabs ── */
     document.querySelectorAll('.auth-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
         tab.classList.add('active');
-        document.getElementById('form' + capitalize(tab.dataset.tab)).classList.add('active');
-        hideError();
+        document.getElementById('form' + cap(tab.dataset.tab)).classList.add('active');
+        hideError('authError');
       });
     });
 
-    /* ── Connexion Firebase ── */
+    /* ── Connexion ── */
     document.getElementById('formLogin').addEventListener('submit', async e => {
       e.preventDefault();
-      const email    = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const btn      = e.target.querySelector('.btn-submit');
-      btn.textContent = 'Connexion…';
-      btn.disabled    = true;
+      const btn = e.target.querySelector('.btn-submit');
+      btn.textContent = 'Connexion…'; btn.disabled = true;
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth,
+          document.getElementById('loginEmail').value.trim(),
+          document.getElementById('loginPassword').value);
         closeDrawer();
-      } catch (err) {
-        showError(firebaseError(err.code));
-      } finally {
-        btn.textContent = 'Se connecter';
-        btn.disabled    = false;
-      }
+      } catch (err) { showError('authError', firebaseErr(err.code)); }
+      finally { btn.textContent = 'Se connecter'; btn.disabled = false; }
     });
 
-    /* ── Inscription Firebase ── */
+    /* ── Inscription ── */
     document.getElementById('formRegister').addEventListener('submit', async e => {
       e.preventDefault();
-      const prenom   = document.getElementById('regPrenom').value.trim();
-      const email    = document.getElementById('regEmail').value.trim();
-      const password = document.getElementById('regPassword').value;
-      const btn      = e.target.querySelector('.btn-submit');
-      btn.textContent = 'Création…';
-      btn.disabled    = true;
+      const prenom = document.getElementById('regPrenom').value.trim();
+      const email  = document.getElementById('regEmail').value.trim();
+      const pass   = document.getElementById('regPassword').value;
+      const btn    = e.target.querySelector('.btn-submit');
+      btn.textContent = 'Création…'; btn.disabled = true;
       try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
         await updateProfile(cred.user, { displayName: prenom });
+        await setDoc(doc(db, 'users', cred.user.uid), { prenom, email, role: 'user' });
         closeDrawer();
-      } catch (err) {
-        showError(firebaseError(err.code));
-      } finally {
-        btn.textContent = 'Créer mon compte';
-        btn.disabled    = false;
-      }
+      } catch (err) { showError('authError', firebaseErr(err.code)); }
+      finally { btn.textContent = 'Créer mon compte'; btn.disabled = false; }
     });
 
     /* ── Déconnexion ── */
@@ -608,52 +814,204 @@
       closeDrawer();
     });
 
-    /* ── Etat de connexion (temps réel) ── */
-    onAuthStateChanged(auth, user => {
+    /* ── Auth state ── */
+    onAuthStateChanged(auth, async user => {
+      currentUser = user;
       const authPanel    = document.getElementById('authPanel');
       const profilePanel = document.getElementById('profilePanel');
+      const btnAccount   = document.getElementById('btnAccount');
+      const btnAdminAdd  = document.getElementById('btnAdminAdd');
 
       if (user) {
+        // Récupérer le rôle depuis Firestore
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        isAdmin = snap.exists() && snap.data().role === 'admin';
+
         const name = user.displayName || user.email.split('@')[0];
         authPanel.style.display = 'none';
         profilePanel.classList.add('active');
         document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
         document.getElementById('profileName').textContent   = name;
         document.getElementById('profileEmail').textContent  = user.email;
+
+        const roleEl = document.getElementById('profileRole');
+        if (isAdmin) {
+          roleEl.textContent = '⚡ Administrateur';
+          roleEl.style.display = 'block';
+        } else {
+          roleEl.style.display = 'none';
+        }
+
         btnAccount.textContent = name[0].toUpperCase();
         btnAccount.classList.add('logged-in');
+        if (isAdmin) btnAdminAdd.classList.add('visible');
+        else btnAdminAdd.classList.remove('visible');
       } else {
+        isAdmin = false;
         authPanel.style.display = 'block';
         profilePanel.classList.remove('active');
         btnAccount.textContent = '👤';
         btnAccount.classList.remove('logged-in');
+        btnAdminAdd.classList.remove('visible');
+      }
+      loadEvents();
+    });
+
+    /* ── Ajout événement (admin) ── */
+    document.getElementById('formAddEvent').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!isAdmin) return;
+      const btn = e.target.querySelector('.btn-submit');
+      btn.textContent = 'Publication…'; btn.disabled = true;
+      try {
+        await addDoc(collection(db, 'events'), {
+          title:     document.getElementById('evtTitle').value.trim(),
+          category:  document.getElementById('evtCat').value,
+          date:      document.getElementById('evtDate').value,
+          desc:      document.getElementById('evtDesc').value.trim(),
+          instagram: document.getElementById('evtInstagram').value.trim(),
+          website:   document.getElementById('evtWebsite').value.trim(),
+          createdAt: serverTimestamp(),
+        });
+        e.target.reset();
+        closeDrawer();
+        loadEvents();
+      } catch (err) {
+        showError('adminError', 'Erreur lors de la publication.');
+      } finally {
+        btn.textContent = 'Publier l\'événement'; btn.disabled = false;
       }
     });
 
+    /* ── Charger les événements ── */
+    function loadEvents() {
+      const section = document.getElementById('eventsSection');
+      const empty   = document.getElementById('eventsEmpty');
+
+      // Vider les cartes existantes (garder #eventsEmpty)
+      Array.from(section.children).forEach(c => {
+        if (c.id !== 'eventsEmpty') c.remove();
+      });
+
+      if (activeCats.size === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      const q = query(
+        collection(db, 'events'),
+        where('date', '==', selectedDate),
+        orderBy('createdAt', 'asc')
+      );
+
+      onSnapshot(q, snap => {
+        Array.from(section.children).forEach(c => {
+          if (c.id !== 'eventsEmpty') c.remove();
+        });
+
+        const filtered = snap.docs.filter(d => activeCats.has(d.data().category));
+
+        if (filtered.length === 0) {
+          empty.style.display = 'block';
+          return;
+        }
+
+        empty.style.display = 'none';
+
+        filtered.forEach(docSnap => {
+          const evt  = docSnap.data();
+          const meta = catMeta[evt.category] || { icon: '📌', label: evt.category };
+          const card = document.createElement('div');
+          card.className = 'event-card';
+          card.innerHTML = `
+            <div class="event-cat-icon">${meta.icon}</div>
+            <div class="event-info">
+              <div class="event-title">${evt.title}</div>
+              <div class="event-meta">${meta.label} · ${formatDate(evt.date)}</div>
+            </div>
+            ${isAdmin ? `<div class="event-admin-btns"><button class="btn-delete-event" data-id="${docSnap.id}" title="Supprimer">🗑</button></div>` : '<div class="event-arrow">›</div>'}
+          `;
+
+          // Clic sur la carte → détail
+          card.addEventListener('click', e => {
+            if (e.target.closest('.btn-delete-event')) return;
+            openDetail(evt, meta);
+          });
+
+          // Suppression (admin)
+          const btnDel = card.querySelector('.btn-delete-event');
+          if (btnDel) {
+            btnDel.addEventListener('click', async e => {
+              e.stopPropagation();
+              if (confirm(`Supprimer "${evt.title}" ?`)) {
+                await deleteDoc(doc(db, 'events', docSnap.id));
+              }
+            });
+          }
+
+          section.appendChild(card);
+        });
+      });
+    }
+
+    /* ── Détail événement ── */
+    function openDetail(evt, meta) {
+      document.getElementById('detailCover').textContent     = meta.icon;
+      document.getElementById('detailTitle').textContent     = evt.title;
+      document.getElementById('detailDateCat').textContent   = `${meta.label} · ${formatDate(evt.date)}`;
+      document.getElementById('detailDesc').textContent      = evt.desc || 'Aucune description.';
+
+      const links = document.getElementById('detailLinks');
+      links.innerHTML = '';
+
+      if (evt.instagram) {
+        links.innerHTML += `
+          <a class="detail-link" href="${evt.instagram}" target="_blank" rel="noopener">
+            <span>📸</span> Voir sur Instagram
+          </a>`;
+      }
+      if (evt.website) {
+        links.innerHTML += `
+          <a class="detail-link" href="${evt.website}" target="_blank" rel="noopener">
+            <span>🌐</span> Site internet
+          </a>`;
+      }
+      if (!evt.instagram && !evt.website) {
+        links.innerHTML = '<p style="color:#bbb;font-size:0.85rem;text-align:center;">Aucun lien disponible</p>';
+      }
+
+      openDrawer('drawerDetail');
+    }
+
     /* ── Helpers ── */
-    function showError(msg) {
-      const el = document.getElementById('authError');
-      el.textContent = msg;
-      el.classList.add('show');
+    function dateKey(d) {
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
 
-    function hideError() {
-      document.getElementById('authError').classList.remove('show');
+    function formatDate(key) {
+      const [y,m,d] = key.split('-');
+      return `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
     }
 
-    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg; el.classList.add('show');
+    }
 
-    function firebaseError(code) {
+    function hideError(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function firebaseErr(code) {
       const map = {
-        'auth/invalid-email':          'Adresse email invalide.',
-        'auth/user-not-found':         'Aucun compte avec cet email.',
-        'auth/wrong-password':         'Mot de passe incorrect.',
-        'auth/invalid-credential':     'Email ou mot de passe incorrect.',
-        'auth/email-already-in-use':   'Cet email est déjà utilisé.',
-        'auth/weak-password':          'Mot de passe trop faible (6 caractères min.).',
-        'auth/too-many-requests':      'Trop de tentatives. Réessaie plus tard.',
+        'auth/invalid-credential':   'Email ou mot de passe incorrect.',
+        'auth/email-already-in-use': 'Cet email est déjà utilisé.',
+        'auth/weak-password':        'Mot de passe trop faible (6 car. min.).',
+        'auth/too-many-requests':    'Trop de tentatives. Réessaie plus tard.',
       };
-      return map[code] || 'Une erreur est survenue. Réessaie.';
+      return map[code] || 'Une erreur est survenue.';
     }
   </script>
 
