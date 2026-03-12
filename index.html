@@ -144,34 +144,39 @@
     .btn-close-admin:hover { background: var(--orange-corail); color: #fff; }
 
     .admin-tabs {
-      display: flex;
-      background: #fff;
-      border-bottom: 2px solid #ede0dc;
       flex-shrink: 0;
-      overflow-x: auto;
-      scrollbar-width: none;
+      padding: 10px 16px 12px;
+      background: var(--blanc-casse);
     }
 
-    .admin-tabs::-webkit-scrollbar { display: none; }
+    .admin-tabs-inner {
+      display: flex;
+      background: #e8ddd9;
+      border-radius: 12px;
+      padding: 3px;
+      gap: 2px;
+    }
 
     .admin-tab {
-      flex: 0 0 auto;
-      padding: 12px 16px;
+      flex: 1;
+      padding: 8px 10px;
       text-align: center;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      color: #aaa;
+      color: #9a7a72;
       cursor: pointer;
-      border-bottom: 3px solid transparent;
+      border-radius: 10px;
       transition: all 0.2s;
-      margin-bottom: -2px;
       white-space: nowrap;
+      background: transparent;
+      border: none;
     }
 
     .admin-tab.active {
+      background: #fff;
       color: var(--orange-brule);
-      border-bottom-color: var(--orange-brule);
+      box-shadow: 0 1px 4px rgba(163,59,38,0.15);
     }
 
     .admin-body {
@@ -840,9 +845,11 @@
     </div>
 
     <div class="admin-tabs">
-      <div class="admin-tab active" data-atab="add">➕ Ajouter</div>
-      <div class="admin-tab" data-atab="manage">📋 Événements</div>
-      <div class="admin-tab" data-atab="structures">🏠 Lieux</div>
+      <div class="admin-tabs-inner">
+        <div class="admin-tab active" data-atab="add">➕ Ajouter</div>
+        <div class="admin-tab" data-atab="manage">📋 Événements</div>
+        <div class="admin-tab" data-atab="structures">🏠 Lieux</div>
+      </div>
     </div>
 
     <div class="admin-body">
