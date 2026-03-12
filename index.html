@@ -49,18 +49,39 @@
       letter-spacing: 0.04em;
     }
 
-    .app-title span {
-      color: var(--jaune-solaire);
+    .app-title span { color: var(--jaune-solaire); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .header-badge {
-      background-color: var(--orange-corail);
+    /* Avatar / bouton compte */
+    .btn-account {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--dark-tint);
+      border: 2px solid var(--jaune-solaire);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s;
+      font-size: 1.1rem;
       color: var(--blanc-casse);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .btn-account:hover { transform: scale(1.08); }
+
+    .btn-account.logged-in {
+      background-color: var(--jaune-solaire);
+      color: var(--orange-brule);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
     }
 
     /* ── DATE LIST ── */
@@ -134,15 +155,9 @@
       overflow-x: auto;
       scrollbar-width: none;
       box-shadow: 0 2px 10px rgba(163,59,38,0.1);
-      animation: slideDown 0.25s ease;
     }
 
     .categories::-webkit-scrollbar { display: none; }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
 
     .cat-chip {
       display: inline-flex;
@@ -152,7 +167,6 @@
       border-radius: 20px;
       background-color: #f5e8e5;
       color: var(--orange-brule);
-      font-family: 'Inter', sans-serif;
       font-size: 0.83rem;
       font-weight: 600;
       cursor: pointer;
@@ -187,6 +201,7 @@
       font-weight: 800;
       color: var(--orange-brule);
       letter-spacing: 0.04em;
+      text-align: center;
     }
 
     .main h1 span { color: var(--orange-corail); }
@@ -196,61 +211,414 @@
       color: #999;
       font-weight: 500;
     }
+
+    /* ══════════════════════════════
+       OVERLAY + DRAWER COMPTE
+    ══════════════════════════════ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    .overlay.open { display: block; }
+
+    .drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--blanc-casse);
+      border-radius: 24px 24px 0 0;
+      padding: 28px 24px 40px;
+      z-index: 101;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(.32,1.2,.6,1);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .drawer.open { transform: translateY(0); }
+
+    .drawer-handle {
+      width: 40px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+      margin: 0 auto 24px;
+    }
+
+    /* Tabs Connexion / Inscription */
+    .auth-tabs {
+      display: flex;
+      background: #ede0dc;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 9px;
+      border-radius: 9px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--orange-brule);
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      background: var(--orange-brule);
+      color: var(--blanc-casse);
+    }
+
+    /* Formulaires */
+    .auth-form { display: none; flex-direction: column; gap: 14px; }
+    .auth-form.active { display: flex; }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-group label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--dark-tint);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .field-group input {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid #e5d5d0;
+      background: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: #222;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-group input:focus { border-color: var(--orange-corail); }
+
+    .btn-submit {
+      margin-top: 4px;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: var(--orange-brule);
+      color: var(--blanc-casse);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover {
+      background: var(--orange-corail);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    /* Message d'erreur */
+    .auth-error {
+      display: none;
+      background: #fce8e4;
+      color: var(--orange-brule);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      font-weight: 500;
+    }
+
+    .auth-error.show { display: block; }
+
+    /* Profil connecté dans le drawer */
+    .profile-view { display: none; flex-direction: column; gap: 20px; }
+    .profile-view.active { display: flex; }
+
+    .profile-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--jaune-solaire);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--orange-brule);
+      margin: 0 auto;
+    }
+
+    .profile-name {
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--orange-brule);
+    }
+
+    .profile-email {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #999;
+      margin-top: -14px;
+    }
+
+    .btn-logout {
+      padding: 12px;
+      border-radius: 14px;
+      border: 2px solid var(--orange-brule);
+      background: transparent;
+      color: var(--orange-brule);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: var(--orange-brule);
+      color: var(--blanc-casse);
+    }
   </style>
 </head>
 <body>
 
+  <!-- HEADER -->
   <div class="header">
     <div class="header-top">
       <div class="app-title">Le <span>Spot</span> Angers</div>
-      <div class="header-badge">Angers 🌅</div>
+      <div class="header-right">
+        <button class="btn-account" id="btnAccount" title="Mon compte">👤</button>
+      </div>
     </div>
     <div class="date-list" id="dateList"></div>
   </div>
 
-  <div class="categories" id="categories">
+  <!-- CATEGORIES -->
+  <div class="categories">
     <div class="cat-chip selected" data-cat="bar"><span class="icon">🍺</span> Bar</div>
     <div class="cat-chip" data-cat="bde"><span class="icon">🎓</span> BDE</div>
     <div class="cat-chip" data-cat="culture"><span class="icon">🎨</span> Culture</div>
     <div class="cat-chip" data-cat="evenements"><span class="icon">🎉</span> Évènements</div>
   </div>
 
+  <!-- MAIN -->
   <div class="main">
     <h1>Le <span>Spot</span><br>Angers</h1>
     <p>La nouvelle app angevine 🌇</p>
   </div>
 
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- DRAWER COMPTE -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-handle"></div>
+
+    <!-- Formulaires auth (non connecté) -->
+    <div id="authPanel">
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-tab="login">Connexion</div>
+        <div class="auth-tab" data-tab="register">Inscription</div>
+      </div>
+
+      <div class="auth-error" id="authError"></div>
+
+      <!-- Connexion -->
+      <form class="auth-form active" id="formLogin">
+        <div class="field-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="ton@email.fr" required />
+        </div>
+        <div class="field-group">
+          <label>Mot de passe</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-submit">Se connecter</button>
+      </form>
+
+      <!-- Inscription -->
+      <form class="auth-form" id="formRegister">
+        <div class="field-group">
+          <label>Prénom</label>
+          <input type="text" id="regPrenom" placeholder="Léa" required />
+        </div>
+        <div class="field-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" placeholder="ton@email.fr" required />
+        </div>
+        <div class="field-group">
+          <label>Mot de passe</label>
+          <input type="password" id="regPassword" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-submit">Créer mon compte</button>
+      </form>
+    </div>
+
+    <!-- Profil connecté -->
+    <div class="profile-view" id="profilePanel">
+      <div class="profile-avatar" id="profileAvatar"></div>
+      <div class="profile-name" id="profileName"></div>
+      <div class="profile-email" id="profileEmail"></div>
+      <button class="btn-logout" id="btnLogout">Se déconnecter</button>
+    </div>
+  </div>
+
   <script>
+    /* ── Dates ── */
     const months = ['jan','fév','mars','avr','mai','juin','juil','août','sep','oct','nov','déc'];
-    const list = document.getElementById('dateList');
+    const dateList = document.getElementById('dateList');
     const today = new Date();
 
     for (let i = -3; i <= 3; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
-
       const card = document.createElement('div');
       let cls = 'date-card';
       if (i === 0) cls += ' today active';
       if (i < -1) cls += ' faded';
       card.className = cls;
-
       card.innerHTML = `
         <span class="day">${String(d.getDate()).padStart(2,'0')}</span>
         <span class="month">${months[d.getMonth()]}</span>
       `;
-
       card.addEventListener('click', () => {
         document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
       });
-
-      list.appendChild(card);
+      dateList.appendChild(card);
     }
 
-    document.querySelectorAll('.cat-chip').forEach(chip => {
-      chip.addEventListener('click', () => chip.classList.toggle('selected'));
+    /* ── Catégories ── */
+    document.querySelectorAll('.cat-chip').forEach(chip =>
+      chip.addEventListener('click', () => chip.classList.toggle('selected'))
+    );
+
+    /* ── Compte / Auth ── */
+    const overlay   = document.getElementById('overlay');
+    const drawer    = document.getElementById('drawer');
+    const btnAccount = document.getElementById('btnAccount');
+
+    // Simule une base locale (localStorage)
+    let currentUser = JSON.parse(localStorage.getItem('lespot_user') || 'null');
+    refreshAccountUI();
+
+    function openDrawer() {
+      overlay.classList.add('open');
+      drawer.classList.add('open');
+    }
+
+    function closeDrawer() {
+      overlay.classList.remove('open');
+      drawer.classList.remove('open');
+    }
+
+    btnAccount.addEventListener('click', openDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    /* Tabs */
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('form' + capitalize(tab.dataset.tab)).classList.add('active');
+        hideError();
+      });
     });
+
+    /* Connexion */
+    document.getElementById('formLogin').addEventListener('submit', e => {
+      e.preventDefault();
+      const email    = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const users    = JSON.parse(localStorage.getItem('lespot_users') || '[]');
+      const user     = users.find(u => u.email === email && u.password === password);
+      if (!user) return showError('Email ou mot de passe incorrect.');
+      login(user);
+    });
+
+    /* Inscription */
+    document.getElementById('formRegister').addEventListener('submit', e => {
+      e.preventDefault();
+      const prenom   = document.getElementById('regPrenom').value.trim();
+      const email    = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const users    = JSON.parse(localStorage.getItem('lespot_users') || '[]');
+      if (users.find(u => u.email === email)) return showError('Cet email est déjà utilisé.');
+      if (password.length < 6) return showError('Le mot de passe doit faire au moins 6 caractères.');
+      const user = { prenom, email, password };
+      users.push(user);
+      localStorage.setItem('lespot_users', JSON.stringify(users));
+      login(user);
+    });
+
+    /* Déconnexion */
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      localStorage.removeItem('lespot_user');
+      currentUser = null;
+      refreshAccountUI();
+      closeDrawer();
+    });
+
+    function login(user) {
+      currentUser = user;
+      localStorage.setItem('lespot_user', JSON.stringify(user));
+      refreshAccountUI();
+      closeDrawer();
+    }
+
+    function refreshAccountUI() {
+      const authPanel    = document.getElementById('authPanel');
+      const profilePanel = document.getElementById('profilePanel');
+
+      if (currentUser) {
+        authPanel.style.display    = 'none';
+        profilePanel.classList.add('active');
+        document.getElementById('profileAvatar').textContent = currentUser.prenom[0].toUpperCase();
+        document.getElementById('profileName').textContent   = currentUser.prenom;
+        document.getElementById('profileEmail').textContent  = currentUser.email;
+        btnAccount.textContent   = currentUser.prenom[0].toUpperCase();
+        btnAccount.classList.add('logged-in');
+      } else {
+        authPanel.style.display    = 'block';
+        profilePanel.classList.remove('active');
+        btnAccount.textContent   = '👤';
+        btnAccount.classList.remove('logged-in');
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('authError');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function hideError() {
+      document.getElementById('authError').classList.remove('show');
+    }
+
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   </script>
 
 </body>
