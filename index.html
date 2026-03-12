@@ -823,29 +823,36 @@
       const btnAdminAdd  = document.getElementById('btnAdminAdd');
 
       if (user) {
-        // Récupérer le rôle depuis Firestore
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        isAdmin = snap.exists() && snap.data().role === 'admin';
-
         const name = user.displayName || user.email.split('@')[0];
+
+        // Mettre à jour l'UI immédiatement, sans attendre Firestore
         authPanel.style.display = 'none';
         profilePanel.classList.add('active');
         document.getElementById('profileAvatar').textContent = name[0].toUpperCase();
         document.getElementById('profileName').textContent   = name;
         document.getElementById('profileEmail').textContent  = user.email;
+        btnAccount.textContent = name[0].toUpperCase();
+        btnAccount.classList.add('logged-in');
+
+        // Récupérer le rôle depuis Firestore (sans bloquer l'UI)
+        try {
+          const snap = await getDoc(doc(db, 'users', user.uid));
+          isAdmin = snap.exists() && snap.data().role === 'admin';
+        } catch (e) {
+          isAdmin = false;
+        }
 
         const roleEl = document.getElementById('profileRole');
         if (isAdmin) {
           roleEl.textContent = '⚡ Administrateur';
           roleEl.style.display = 'block';
+          btnAdminAdd.classList.add('visible');
         } else {
           roleEl.style.display = 'none';
+          btnAdminAdd.classList.remove('visible');
         }
 
-        btnAccount.textContent = name[0].toUpperCase();
-        btnAccount.classList.add('logged-in');
-        if (isAdmin) btnAdminAdd.classList.add('visible');
-        else btnAdminAdd.classList.remove('visible');
+        loadEvents();
       } else {
         isAdmin = false;
         authPanel.style.display = 'block';
