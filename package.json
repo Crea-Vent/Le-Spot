@@ -1,0 +1,25 @@
+{
+  "name": "le-spot-angers",
+  "version": "1.0.0",
+  "description": "Le Spot Angers - Application mobile",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build step — static HTML'",
+    "cap:sync": "npx cap sync",
+    "cap:ios": "npx cap open ios",
+    "cap:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Crea-Vent/Le-Spot"
+  },
+  "license": "ISC"
+}

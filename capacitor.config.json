@@ -1,0 +1,20 @@
+{
+  "appId": "com.lespot.angers",
+  "appName": "Le Spot Angers",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#A33B26",
+      "androidSplashResourceName": "splash",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#A33B26"
+    }
+  }
+}
